@@ -23,7 +23,7 @@ RED = "\033[31m"
 PASS = 0
 FAIL = 0
 username = "Abdelrahman.Rasem"
-password = "20111940@A"
+password = "000"
 os.environ['PATH'] += r"C:\Users\Abdelrahman.Rasem\Downloads\edgedriver_win64 (1)\msedgedriver.exe"
 
 
@@ -76,7 +76,7 @@ def send_email(fn):
     server.starttls()
 
     # Login to the email account
-    server.login('globtesting0@gmail.com', 'vfqmlzzwiubkyxlg')
+    server.login('globtesting0@gmail.com', '000')
 
     # Send the email
     server.send_message(msg)
