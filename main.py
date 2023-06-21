@@ -317,7 +317,8 @@ for row in table.rows:
 doc.save(filename)
 if PASS == size - 1:
     print("Sending Email....")
-# send_email(filename)
+    #uncomment the next line to send email
+    #send_email(filename)
 # #Schedule the email to be sent every day at 9:00 AM
 # schedule.every().week.monday.at('01:00').do(lambda: send_email("Project Status Week 24 2023.docx"))
 #
