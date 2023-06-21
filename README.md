@@ -17,8 +17,6 @@ Using the collected data, the project generates comprehensive project status rep
 The generated reports can be easily customized and tailored to meet specific project requirements.
 ### Efficiency: 
 By automating the report generation process, Project-Status-Report-GEN saves time and effort compared to manual report creation.
-# Contributions:
-The project is open to contributions Only For Globitel Team community. Whether it's bug fixes, feature enhancements, or new ideas, contributors are welcome to submit pull requests to improve the functionality and usability of the project.
 
 # Ownership and Usage:
 Project-Status-Report-GEN is solely owned by Abedalrahman Rasem Sheikha and is intended for use by the Globitel team. As the owner, you have full rights and control over the project. The Globitel team is authorized to utilize and benefit from the project for internal purposes within the organization.
