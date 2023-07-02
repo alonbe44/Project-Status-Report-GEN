@@ -21,7 +21,7 @@ By automating the report generation process, Project-Status-Report-GEN saves tim
 The project is open to contributions Only For Globitel Team community. Whether it's bug fixes, feature enhancements, or new ideas, contributors are welcome to submit pull requests to improve the functionality and usability of the project.
 
 # Ownership and Usage:
-Project-Status-Report-GEN is solely owned by Abedalrahman Rasem Sheikha and is intended for use by the Globitel team. As the owner, you have full rights and control over the project. The Globitel team is authorized to utilize and benefit from the project for internal purposes within the organization.
+Project-Status-Report-GEN is solely owned by Abedalrahman Rasem Sheikha , Supervised by Mohammad Farah and is intended for use by the Globitel team. As the owner, you have full rights and control over the project. The Globitel team is authorized to utilize and benefit from the project for internal purposes within the organization.
 
 # Contributions:
 While the project is not open to external contributions, the Globitel team is encouraged to provide feedback, suggestions, and improvements directly to the project owner. Any enhancements or modifications to the project can be discussed and implemented internally within the Globitel team.
