@@ -26,7 +26,7 @@ RED = "\033[31m"
 PASS = 0
 FAIL = 0
 username = "Abdelrahman.Rasem"
-password = "20111940@A"
+password = "000"
 os.environ['PATH'] += r"C:\Users\Abdelrahman.Rasem\Downloads\edgedriver_win64 (1)\msedgedriver.exe"
 
 
@@ -38,6 +38,134 @@ def send_email(fn):
         fn (str): The filename of the attachment to be sent.
 
     """
+<<<<<<< HEAD
+=======
+
+    # Create a message object
+    msg = MIMEMultipart()
+
+    # Get the current week of the year
+    weekemail = str(datetime.now().isocalendar()[1])
+
+    # Set email details (sender, recipient, subject)
+    msg['From'] = 'globtesting0@gmail.com'
+    msg['To'] = 'Mohammad.Farah@globitel.com'
+
+    # Add CC recipients
+    msg['CC'] = 'Abdelrahman.Rasem@globitel.com'
+
+    # Set the subject of the email
+    msg['Subject'] = 'Project Status ' + weekemail + ' 2023'
+
+    # Attach the file to the email
+    filename2email = fn
+    attachment = open(filename2email, 'rb')
+
+    # Create a MIMEBase object to represent the attachment
+    part = MIMEBase('application', 'octet-stream')
+
+    # Read the attachment file and encode it using base64
+    part.set_payload(attachment.read())
+    encoders.encode_base64(part)
+
+    # Set the header for the attachment
+    part.add_header('Content-Disposition', f'attachment; filename="{filename2email}"')
+
+    # Attach the attachment to the email message
+    msg.attach(part)
+
+    # Connect to the email server and send the email
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+
+    # Start a secure TLS connection
+    server.starttls()
+
+    # Login to the email account
+    server.login('globtesting0@gmail.com', '000')
+
+    # Send the email
+    server.send_message(msg)
+
+    # Quit the email server connection
+    server.quit()
+
+
+# Create EdgeOptions object
+options = Options()
+
+# Add headless argument
+#options.add_argument('--headless')
+
+# Set the path to the Microsoft Edge WebDriver
+# Replace "path/to/edge/driver" with the actual path on your system
+
+# Create a new instance of the Edge driver
+browser = webdriver.Edge(options=options)
+
+# Navigate to the login page
+browser.get("https://supportcrm.globitel.com/index.php")
+browser.maximize_window()
+
+# Find the username and password input fields and enter your credentials
+username_input = browser.find_element(By.ID, "username")
+username_input.send_keys(username)
+password_input = browser.find_element(By.ID, "password")
+password_input.send_keys(password)
+password_input.send_keys(Keys.RETURN)
+
+pageone = browser.page_source
+
+# select first tab to close it.
+first_tab_handle = browser.window_handles[0]
+
+# waiting for page to load.
+browser.implicitly_wait(3)
+
+browser.get(
+    "https://supportcrm.globitel.com/index.php?module=Project&parent=&page=&view=List&viewname=297&orderby=&sortorder"
+    "=&app=MARKETING&tag_params=%5B%5D&nolistcache=0&list_headers=&tag=")
+# Open a new tab and navigate to a new page
+browser.execute_script(
+    "window.open('https://supportcrm.globitel.com/index.php?module=Project&parent=&page=&view=List&viewname=297"
+    "&orderby=&sortorder=&app=MARKETING&tag_params=%5B%5D&nolistcache=0&list_headers=&tag=',"
+    "'_blank')")
+
+actions = ActionChains(browser)
+actions.send_keys(Keys.END).perform()
+
+# listopen=browser.find_element(By.CLASS_NAME, "app-icon fa fa-bars")
+
+
+# Find all buttons on the page by their tag name
+secound_tab = browser.window_handles[1]
+
+browser.switch_to.window(first_tab_handle)
+browser.close()
+browser.switch_to.window(secound_tab)
+
+page2 = browser.page_source
+# print(browser.page_source)
+
+print("---------------------------------- target elem --------------------------------")
+
+form = browser.find_element(By.ID, "listedit")
+
+table_row_type = browser.find_element(By.XPATH, '//*[@id="listViewContent"]/div/div[3]/div[2]')
+
+mp = {'project name': {}, 'Engineer name': {}, 'Related To': {}, 'status': {}, 'Details': {}}
+selectedprjxp = 1
+scrollable = browser.find_element(By.XPATH, '//*[@id="table-content"]/div[2]')
+
+i = 9
+size = int(
+    browser.find_element(By.XPATH, '//*[@id="listview-actions"]/div/div[3]/div/span/span[1]').text.split(' to ')[1]) + 1
+print("Starting Test on Total project size = ", size)
+
+for number in range(1, size):
+    time.sleep(3)  # Add a delay of 3 seconds
+    mp['project name'][number] = browser.find_element(By.XPATH,
+                                                      '//*[@id="Project_listView_row_' + str(number) + '"]/td[2]').text
+>>>>>>> cc5369d073e884de1d5a6407314c08e0542a6a57
     try:
         # Create a message object
         msg = MIMEMultipart()
