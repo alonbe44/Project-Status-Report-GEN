@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>main.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>main.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">smtplib</span>
+<span class="kn">from</span> <span class="nn">email.mime.multipart</span> <span class="kn">import</span> <span class="n">MIMEMultipart</span>
+<span class="kn">from</span> <span class="nn">email.mime.base</span> <span class="kn">import</span> <span class="n">MIMEBase</span>
+<span class="kn">from</span> <span class="nn">email</span> <span class="kn">import</span> <span class="n">encoders</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">context</span>
+<span class="kn">from</span> <span class="nn">docx.enum.table</span> <span class="kn">import</span> <span class="n">WD_CELL_VERTICAL_ALIGNMENT</span>
+<span class="kn">from</span> <span class="nn">docx.enum.text</span> <span class="kn">import</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span>
+<span class="kn">from</span> <span class="nn">docx.opc.oxml</span> <span class="kn">import</span> <span class="n">parse_xml</span>
+<span class="kn">from</span> <span class="nn">docx.shared</span> <span class="kn">import</span> <span class="n">Pt</span><span class="p">,</span> <span class="n">RGBColor</span><span class="p">,</span> <span class="n">Inches</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">ActionChains</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+<span class="kn">from</span> <span class="nn">docx</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.edge.options</span> <span class="kn">import</span> <span class="n">Options</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Global variables</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">size</span> <span class="o">=</span> <span class="mi">33</span>
+<span class="n">GREEN</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m&quot;</span>
+<span class="n">RESET</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+<span class="n">RED</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31m&quot;</span>
+<span class="n">PASS</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">FAIL</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\Abdelrahman.Rasem\Downloads\edgedriver_win64 (1)\msedgedriver.exe&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Sends an email with an attachment.
+
+Args:
+</code></pre>
+<p>fn (str): The filename of the attachment to be sent.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">send_email</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Create a message object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">msg</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Get the current week of the year</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">weekemail</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Set email details (sender, recipient, subject)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;From&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;globtesting0@gmail.com&#39;</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;To&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Mohammad.Farah@globitel.com&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>msg[&lsquo;To&rsquo;] = &lsquo;Abdelrahman.Rasem@globitel.com&rsquo;
+Add CC recipients</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;CC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Abdelrahman.Rasem@globitel.com&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Set the subject of the email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;Subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Project Status &#39;</span> <span class="o">+</span> <span class="n">weekemail</span> <span class="o">+</span> <span class="s1">&#39; 2023&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Attach the file to the email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">filename2email</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Attachment file not found&quot;</span><span class="p">)</span>
+        <span class="n">attachment</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename2email</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Create a MIMEBase object to represent the attachment</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">part</span> <span class="o">=</span> <span class="n">MIMEBase</span><span class="p">(</span><span class="s1">&#39;application&#39;</span><span class="p">,</span> <span class="s1">&#39;octet-stream&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Read the attachment file and encode it using base64</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">part</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="n">attachment</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">encoders</span><span class="o">.</span><span class="n">encode_base64</span><span class="p">(</span><span class="n">part</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Set the header for the attachment</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">part</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;attachment; filename=&quot;</span><span class="si">{</span><span class="n">filename2email</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Attach the attachment to the email message</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">msg</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">part</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Connect to the email server and send the email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">server</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="s1">&#39;smtp.gmail.com&#39;</span><span class="p">,</span> <span class="mi">587</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Start a secure TLS connection</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">server</span><span class="o">.</span><span class="n">starttls</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Login to the email account</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s1">&#39;x@gmail.com&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Send the email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">server</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Quit the email server connection</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">server</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>print(&ldquo;An error occurred:&rdquo;, error)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">exception</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">exception</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Additional code to handle or raise the exception as needed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">raise</span> <span class="n">exception</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>print(&ldquo;Error message:&rdquo;, str(error))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Objective: The Gen_Document function aims to generate a Word document containing a table with project status
+information. The function takes a hash map as input, which contains project details such as project name,
+engineer name, related to, status, and comments. The function highlights the rows of the table based on the status
+value and saves the document with a filename that includes the current week number.</p>
+<p>Inputs:
+- mp: a hash map containing project details such as project name, engineer name, related to, status, and comments.</p>
+<p>Flow:
+1. Create a new Word document.
+2. Add a header to the document with the title &ldquo;Globitel Project Status Report&rdquo; and the current date.
+3. Create a table with headers for project name, engineer name, related to, status, and comments.
+4. Iterate over the hash map and add data to the table.
+5. Highlight rows based on the status value.
+6. Save the document with a filename that includes the current week number.
+7. Modify the page size for landscape orientation.
+8. Adjust the width of the last column in the table.
+9. Save the modified document.</p>
+<p>Outputs:
+- A Word document containing a table with project status information.
+- The document is saved with a filename that includes the current week number.</p>
+<p>Additional aspects:
+- The function uses the docx library to create and modify Word documents.
+- The function uses RGBColor to set the font color of the status cell based on the status value.
+- The function assumes that the table is the first and only table in the document.
+- The function adjusts the width of the last column in the table to 4 inches.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">docx</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">docx.shared</span> <span class="kn">import</span> <span class="n">Inches</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">Data_Analysis</span><span class="p">(</span><span class="n">mp</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Convert the dictionary to a pandas DataFrame</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Perform data analysis or generate statistics using pandas methods</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">summary_stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="n">status_counts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+    <span class="n">average_duration</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">Eng_Count</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Create a new Word document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Add a title to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Engineer Statistics Report&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Create a table of contents</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Table of Contents&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Add a field instruction for the TOC</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">toc_field_code</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;TOC \o &quot;1-3&quot; \h \z \u&#39;</span>
+    <span class="n">toc_xml</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&lt;w:p xmlns:w=&quot;http://schemas.openxmlformats.org/wordprocessingml/2006/main&quot; xmlns:wx=&quot;http://schemas.microsoft.com/office/word/2003/auxHint&quot; xmlns:w14=&quot;http://schemas.microsoft.com/office/word/2010/wordml&quot; xmlns:w15=&quot;http://schemas.microsoft.com/office/word/2012/wordml&quot; xmlns:w16cid=&quot;http://schemas.microsoft.com/office/word/2016/wordml/cid&quot; xmlns:w16se=&quot;http://schemas.microsoft.com/office/word/2015/wordml/symex&quot; xmlns:wpg=&quot;http://schemas.microsoft.com/office/word/2010/wordprocessingGroup&quot; xmlns:wpi=&quot;http://schemas.microsoft.com/office/word/2010/wordprocessingInk&quot; xmlns:wne=&quot;http://schemas.microsoft.com/office/word/2006/wordml&quot; xmlns:wps=&quot;http://schemas.microsoft.com/office/word/2010/wordprocessingShape&quot; w:rsidR=&quot;005A15A2&quot; w:rsidRPr=&quot;005A15A2&quot; w:rsidRDefault=&quot;005A15A2&quot; w:rsidP=&quot;005A15A2&quot;&gt;&lt;w:pPr&gt;&lt;w:pStyle w:val=&quot;TOCHeading&quot;/&gt;&lt;w:rPr&gt;&lt;w:noProof/&gt;&lt;/w:rPr&gt;&lt;/w:pPr&gt;&lt;w:r&gt;&lt;w:t&gt;&lt;/w:t&gt;&lt;/w:r&gt;&lt;w:r w:rsidR=&quot;005A15A2&quot;&gt;&lt;w:fldSimple w:instr=&quot;TOC \o &amp;quot;1-3&amp;quot; \h \z \u&quot;&gt;&lt;w:rPr&gt;&lt;w:noProof/&gt;&lt;/w:rPr&gt;&lt;/w:fldSimple&gt;&lt;/w:r&gt;&lt;/w:p&gt;&#39;</span>
+    <span class="n">toc_paragraph</span> <span class="o">=</span> <span class="n">parse_xml</span><span class="p">(</span><span class="n">toc_xml</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">toc_paragraph</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>Add summary statistics as a table to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Summary Statistics&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">summary_stats</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Add statistics about each engineer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Engineer Statistics&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">engineer_name</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Statistics for Engineer: </span><span class="si">{</span><span class="n">engineer_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">engineer_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">engineer_name</span><span class="p">]</span>
+        <span class="n">engineer_stats</span> <span class="o">=</span> <span class="n">engineer_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">engineer_stats</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Calculate overall statistics for all engineers</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">overall_stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Add overall minimum and maximum values to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Overall Statistics&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Minimum values:</span><span class="se">\n</span><span class="si">{</span><span class="n">overall_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Maximum values:</span><span class="se">\n</span><span class="si">{</span><span class="n">overall_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Create a pie chart</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">engineer_counts</span> <span class="o">=</span> <span class="n">Eng_Count</span>
+    <span class="n">engineer_counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;pie&#39;</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Engineer Name&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Engineer Distribution&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;Engineer_distribution.png&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Add the pie chart to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_picture</span><span class="p">(</span><span class="s1">&#39;Engineer_distribution.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">Inches</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>Add spacing after the pie chart</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+    <span class="n">Eng_Count</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;ENG Name&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;ENG Counts&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;ENG_count.png&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Add status counts chart to the Word document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Engineer Project Load&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_picture</span><span class="p">(</span><span class="s1">&#39;ENG_count.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">Inches</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">height</span><span class="o">=</span><span class="n">Inches</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>Generate and save status counts bar chart as an image</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">status_counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Status Counts&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;status_counts_chart.png&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Add status counts chart to the Word document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Status Counts&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_picture</span><span class="p">(</span><span class="s1">&#39;status_counts_chart.png&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">Inches</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">height</span><span class="o">=</span><span class="n">Inches</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Add average duration to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="s1">&#39;Average Duration&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">formatted_average_duration</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_duration</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The average duration is: </span><span class="si">{</span><span class="n">formatted_average_duration</span><span class="si">}</span><span class="s2"> days&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Save the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;data_analysis_report.docx&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Example usage</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">mp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;project name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Speech Log expansion&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;PMP (Expansion Telesales)&#39;</span><span class="p">,</span>
+                       <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;SpeechLog (Screen Capture, 27 Licenses)&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;SpeechLog&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;SpeechLog (30 IP)&#39;</span><span class="p">,</span>
+                       <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;RQMS on SAS&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;SpeechLog Retail Zain KW (POC)&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;Speech Log Recorder House Bank&#39;</span><span class="p">,</span>
+                       <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;SpeechLog Voice Recording (IP) Kalaam&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;Move 4 licenses to new server&#39;</span><span class="p">,</span>
+                       <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;SpeechLog (Backup Recorder)&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;SpeechLog (20 IP)&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;Accudial (Upgrade)&#39;</span><span class="p">,</span>
+                       <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;SpeechLog Al Rajhi Bank&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;E911 integration with XLM&#39;</span><span class="p">,</span>
+                       <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;E911 (Caller Barring Status)&#39;</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;LTE, ITS &amp; RS Upgrade&#39;</span><span class="p">,</span>
+                       <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;Data Rating and Charging (Redundancy)&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;Customer Order (Phase II)&#39;</span><span class="p">,</span>
+                       <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;VAS Sub-charging CR&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;MLC Upgrade&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;Enabling-4G&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;USSD GW Upgrade &amp; CR&#39;</span><span class="p">,</span>
+                       <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;SpeechLog (34 IP)&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;JRM – E1 Recorder&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;SpeechLog&#39;</span><span class="p">,</span>
+                       <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;Roaming (Links Migration to HSL)&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;Speech Analytics (POC)&#39;</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;Video call&#39;</span><span class="p">,</span>
+                       <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;Roaming Bundle (Reinstallation)&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;SpeechLog&#39;</span><span class="p">},</span>
+      <span class="s1">&#39;Engineer name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Nabeel Nusair&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Abdellateef Ibrahim&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Ahmad AlHasan&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Ahmad AlHasan&#39;</span><span class="p">,</span>
+                        <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;Ahmad AlHasan&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;Mohammad Alalami&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;Tamer Wathaifi&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;Bilal Al-Noori&#39;</span><span class="p">,</span>
+                        <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;Hamzeh Shwemeh&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;Bilal Al-Noori&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span>
+                        <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;Hamzeh Shwemeh&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;Hamzeh Shwemeh&#39;</span><span class="p">,</span>
+                        <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;Yousef Mishael&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;aladdin Shishani&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;Khairy Khdeir&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;Laith Al-Janaideh&#39;</span><span class="p">,</span>
+                        <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;Zaid Hina&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;Khairy Khdeir&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;Zaid Hina&#39;</span><span class="p">,</span> <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span>
+                        <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;Abdulrahman Hasan&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;Yousef Mishael&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;Nabeel Nusair&#39;</span><span class="p">,</span>
+                        <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;Nabeel Nusair&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;aladdin Shishani&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;CCE&#39;</span><span class="p">},</span>
+      <span class="s1">&#39;Related To&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Earth Link&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Zain Jordan&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Zain Jordan&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Takamol (Switch IRAQ)&#39;</span><span class="p">,</span>
+                     <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;Takamol (ALghanim)&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;Etisalat UAE&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;Zain KW&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;Housing Bank&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;Kalaam&#39;</span><span class="p">,</span>
+                     <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;Metropolitan (Cinnamon Lakeside Colombo)&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;Arab Bank&#39;</span><span class="p">,</span>
+                     <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;Jordan Commercial Bank (JCB)&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;Housing Bank&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;Al Rajhi Bank&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;PSD&#39;</span><span class="p">,</span>
+                     <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;Orange&#39;</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;Ufone&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;TeleCel&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;Asiacell&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;Golis Somalia&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;Zain Jordan&#39;</span><span class="p">,</span>
+                     <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;Asiacell&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;Zain Jordan&#39;</span><span class="p">,</span> <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;ABC BANK BH&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;JRM&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;Al Rajhi Bank&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;Ufone&#39;</span><span class="p">,</span>
+                     <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;Zain Iraq&#39;</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;PSD&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;Sudatel&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;Unitel (Palace of Justice)&#39;</span><span class="p">},</span>
+      <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Initiated&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Waiting for Feedback&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span>
+                 <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;Initiated&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span>
+                 <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span>
+                 <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span>
+                 <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span>
+                 <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;In Progress&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;On Hold&#39;</span><span class="p">},</span>
+      <span class="s1">&#39;Details&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;No comments&#39;</span><span class="p">,</span>
+                  <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 12:08 PM (17 hours ago)</span><span class="se">\n</span><span class="s1">waiting from commercial .</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 12:07 PM (17 hours ago)</span><span class="se">\n\n</span><span class="s1">we took new package from dev and we are still testing with development.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 12:06 PM (17 hours ago)</span><span class="se">\n</span><span class="s1">we had sent reminder waiting for client.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 12:05 PM (17 hours ago)</span><span class="se">\n\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:37 AM (18 hours ago)</span><span class="se">\n\n</span><span class="s1">we are waiting onside implementation to be ready,</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:36 AM (18 hours ago)</span><span class="se">\n</span><span class="s1">the client had sent feedback on reports we will replay ASAP.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:33 AM (18 hours ago)</span><span class="se">\n</span><span class="s1">we are preparing the SRD.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;Ha</span><span class="se">\n</span><span class="s1">Hamzeh Shwemeh</span><span class="se">\n</span><span class="s1">2023-07-03 11:34 AM (18 hours ago)</span><span class="se">\n</span><span class="s1">We have completed the installation based on the agreement to support CSTAIII-SPAN</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:29 AM (18 hours ago)</span><span class="se">\n\n</span><span class="s1">contact with Sales .@Osama Hammouh </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:23 AM (18 hours ago)</span><span class="se">\n\n</span><span class="s1">we will contact the client,</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:17 AM (18 hours ago)</span><span class="se">\n\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:09 AM (18 hours ago)</span><span class="se">\n</span><span class="s1">We did recover the DB, still we need to check with Development (Migration script for notification ). </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 11:05 AM (18 hours ago)</span><span class="se">\n</span><span class="s1">we need to install 2 recorder in the test tomorrow.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:41 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">waiting for Orange to provide us with XLM ,</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:38 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">Waiting for PSD  PO.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:35 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">RS internal testing completed , The updated UI added , Operation will be arranged .</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:28 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">we had activated the OS, DB licenses our team will arrange with the client to sync DB.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:26 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">we are having a meeting today with Thaer also will send a status update.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:25 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">we are supposed to send a reminder today. </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:24 AM (20 hours ago)</span><span class="se">\n</span><span class="s1">waiting for development , also to check with commercial. </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-03 09:11 AM (20 hours ago)</span><span class="se">\n\n</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2023-07-03 07:52 AM (21 hours ago)</span><span class="se">\n</span><span class="s1">UAT will start today.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-02 06:40 AM (1 day ago)</span><span class="se">\n</span><span class="s1">the client is asking for a handover documentation, but we are pushing to get the PAC first so we are waiting for client feedback.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;Ab</span><span class="se">\n</span><span class="s1">Abdelrahman Rasem</span><span class="se">\n</span><span class="s1">2023-07-02 06:31 AM (1 day ago)</span><span class="se">\n</span><span class="s1">we had sent the PAC for the client Before EID at 25/6/2023 still waiting for Feedback.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2023-05-22 09:02 AM (1 month ago)</span><span class="se">\n\n</span><span class="s1">Testing in Main site will begin tomorrow.</span><span class="se">\n\n</span><span class="s1">In regard to HA and DR, we are waiting for Rajhi Bank to provide the needed requirements (site is not ready).</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2023-02-21 07:47 AM (4 months ago)</span><span class="se">\n</span><span class="s1">A plan was submitted to Ufone on transferring the server in ISB to KHI, also the commercial team shall submit their offerings</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2022-12-12 11:57 AM (6 months ago)</span><span class="se">\n</span><span class="s1">On hold, till we finalize RQM POC.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2022-03-01 12:24 PM (1 year ago)</span><span class="se">\n</span><span class="s1">Updates has been implemented, waiting PSD and TRC feedback.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2023-04-25 06:50 AM (2 months ago)</span><span class="se">\n</span><span class="s1">Project put on hold due to political status in Sudan.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">,</span>
+                  <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;Mo</span><span class="se">\n</span><span class="s1">Mohammad Farah</span><span class="se">\n</span><span class="s1">2023-02-27 1:42 PM (4 months ago)</span><span class="se">\n</span><span class="s1">Site is not ready yet.</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">},</span>
+      <span class="s1">&#39;Duration&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">107</span><span class="p">,</span>
+                   <span class="mi">4</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
+                   <span class="mi">7</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+                   <span class="mi">10</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span> <span class="mi">76</span><span class="p">,</span>
+                   <span class="mi">13</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+                   <span class="mi">16</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">18</span><span class="p">:</span> <span class="mi">306</span><span class="p">,</span>
+                   <span class="mi">19</span><span class="p">:</span> <span class="mi">382</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+                   <span class="mi">22</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">24</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+                   <span class="mi">25</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">27</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+                   <span class="mi">28</span><span class="p">:</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+                   <span class="mi">31</span><span class="p">:</span> <span class="mi">59</span><span class="p">}}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Data_Analysis(mp)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>Objective: - The objective of the Gen_Document function is to generate a Word document containing a table with
+project status information.</p>
+<p>Inputs:
+- mp: a dictionary containing project status information.</p>
+<p>Flow:
+- Create a new Word document.
+- Add a header to the document.
+- Add the current date to the header.
+- Add a paragraph with the total number of running projects.
+- Create a table with headers.
+- Iterate over the project status information and add data to the table.
+- Highlight rows based on the status value.
+- Modify the page size for landscape orientation.
+- Adjust the width of the last column in the table.
+- Save the modified document.</p>
+<p>Outputs:
+- A Word document containing a table with project status information.</p>
+<p>Additional aspects:
+- The function uses the python-docx library to create and modify Word documents.
+- The function highlights rows in the table based on the status value.
+- The function adjusts the page size and column width for better document formatting.
+- The function saves the modified document with a filename based on the current week number.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">Gen_Document</span><span class="p">(</span><span class="n">mp</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mp</span><span class="p">:</span>
+        <span class="k">return</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>Create a new Word document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Add a header to the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">header</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+    <span class="n">header_paragraph</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">header_paragraph</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Globitel Project Status Report&quot;</span>
+    <span class="n">header_paragraph</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+    <span class="n">header_paragraph</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">styles</span><span class="p">[</span><span class="s2">&quot;Heading 1&quot;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Add the current date on the left side of the header</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date_paragraph</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">()</span>
+    <span class="n">date_paragraph</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">)</span>
+    <span class="n">date_paragraph</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span><span class="o">.</span><span class="n">LEFT</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>Add a new paragraph with a line break and additional text</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">paragraph</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">()</span>
+    <span class="n">paragraph</span><span class="o">.</span><span class="n">add_run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Running Projects </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Create a table with headers</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">table</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">table</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;Table Grid&#39;</span>
+    <span class="n">header_cells</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cells</span>
+    <span class="n">header_cells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;project name&#39;</span>
+    <span class="n">header_cells</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Engineer name&#39;</span>
+    <span class="n">header_cells</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Related To&#39;</span>
+    <span class="n">header_cells</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;status&#39;</span>
+    <span class="n">header_cells</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Comments&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>Set the header cells&rsquo; formatting</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">header_cells</span><span class="p">:</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">vertical_alignment</span> <span class="o">=</span> <span class="n">WD_CELL_VERTICAL_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bold</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">Pt</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="n">status_cell</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">status_cell</span><span class="o">.</span><span class="n">vertical_alignment</span> <span class="o">=</span> <span class="n">WD_CELL_VERTICAL_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+    <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+    <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bold</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">Pt</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Red color</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Iterate over the hash map and add data to the table</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">row_cells</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">()</span><span class="o">.</span><span class="n">cells</span>
+        <span class="n">row_cells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;project name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">number</span><span class="p">,</span>
+                                                   <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Get project name, defaulting to empty string if not found</span>
+        <span class="n">row_cells</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">number</span><span class="p">,</span>
+                                                    <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Get engineer name, defaulting to empty string if not found</span>
+        <span class="n">row_cells</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Related To&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">number</span><span class="p">,</span>
+                                                 <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Get engineer name, defaulting to empty string if not found</span>
+        <span class="n">row_cells</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Get status, defaulting to empty string if not found</span>
+        <span class="n">row_cells</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Details&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>Highlight rows based on the status value</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+        <span class="n">status_cell</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">status_cell</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Define the highlighting color based on the status value</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;in progress&#39;</span><span class="p">:</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>  <span class="c1"># Blue</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;completed&#39;</span><span class="p">:</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Green</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;on hold&#39;</span><span class="p">:</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Red</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;Initiated&#39;</span><span class="p">:</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>  <span class="c1"># Gray</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">RGBColor</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>  <span class="c1"># Gray</span>
+
+        <span class="k">if</span> <span class="n">highlight_color</span><span class="p">:</span>
+            <span class="n">status_cell</span><span class="o">.</span><span class="n">vertical_alignment</span> <span class="o">=</span> <span class="n">WD_CELL_VERTICAL_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+            <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">WD_PARAGRAPH_ALIGNMENT</span><span class="o">.</span><span class="n">CENTER</span>
+            <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bold</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">Pt</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+            <span class="n">status_cell</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="n">highlight_color</span>
+
+    <span class="n">current_week</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;Project Status Week &#39;</span> <span class="o">+</span> <span class="n">current_week</span> <span class="o">+</span> <span class="s1">&#39; 2023.docx&#39;</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>Open the Word document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Get the first section of the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">section</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Modify the page size for landscape orientation</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">section</span><span class="o">.</span><span class="n">page_width</span> <span class="o">=</span> <span class="n">Pt</span><span class="p">(</span><span class="mi">792</span><span class="p">)</span>  <span class="c1"># Set the width to 11 inches (792 points)</span>
+    <span class="n">section</span><span class="o">.</span><span class="n">page_height</span> <span class="o">=</span> <span class="n">Pt</span><span class="p">(</span><span class="mi">612</span><span class="p">)</span>  <span class="c1"># Set the height to 8.5 inches (612 points)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>Assuming the table is the first and only table in the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">table</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>Get the last column index</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">last_column_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      <p>Iterate over the cells in the last column and adjust the width</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">last_column_index</span><span class="p">]</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">Inches</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>  <span class="c1"># Adjust the width as needed</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>Save the modified document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <p>Data_Analysis(mp)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <p>Objective: The objective of the function is to collect data from a web page, create a Word document, and highlight
+rows in the table based on the status value. The function also prints the number of passed and failed projects,
+generates a file name, and sends an email if all projects pass.</p>
+<p>Inputs:
+The function takes no inputs, but it uses global variables for the username, password, and size of the project.</p>
+<p>Flow:
+1. The function creates an EdgeOptions object and a new instance of the Edge driver.
+2. It navigates to the login page and enters the username and password.
+3. The function opens a new tab and navigates to a new page.
+4. It finds all buttons on the page by their tag name and switches to the second tab.
+5. The function collects data from the web page and stores it in a hash map.
+6. It highlights rows based on the status value and saves the Word document.
+7. The function prints the number of passed and failed projects and sends an email if all projects pass.
+8. Finally, the function closes the browser window.</p>
+<p>Outputs: The function generates a Word document with highlighted rows based on the status value. It also prints the
+number of passed and failed projects and sends an email if all projects pass.</p>
+<p>Additional aspects: The function uses the selenium, docx, and datetime libraries to interact with the web page,
+create a Word document, and get the current date. It also uses the Options class to add a headless argument and
+maximize the window. The function adds a delay of 3 seconds to avoid errors and scrolls the page to view the last
+three projects. The function uses global variables for the username, password, and size of the project and updates
+the size variable based on the number of projects on the web page.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">Collect_Data</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">PASS</span><span class="p">,</span> <span class="n">FAIL</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">GREEN</span><span class="p">,</span> <span class="n">RED</span><span class="p">,</span> <span class="n">RESET</span><span class="p">,</span> <span class="n">size</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>Create EdgeOptions object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-65'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-65'>#</a>
+      </div>
+      <p>Create a new instance of the Edge driver</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-66'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-66'>#</a>
+      </div>
+      <p>Navigate to the login page</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://supportcrm.globitel.com/index.php&quot;</span><span class="p">)</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">maximize_window</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-67'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-67'>#</a>
+      </div>
+      <p>Find the username and password input fields and enter your credentials</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">username_input</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;username&quot;</span><span class="p">)</span>
+    <span class="n">username_input</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="n">password_input</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">)</span>
+    <span class="n">password_input</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+    <span class="n">password_input</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-68'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-68'>#</a>
+      </div>
+      <p>select first tab to close it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">first_tab_handle</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">window_handles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-69'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-69'>#</a>
+      </div>
+      <p>waiting for page to load.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">browser</span><span class="o">.</span><span class="n">implicitly_wait</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;https://supportcrm.globitel.com/index.php?module=Project&amp;parent=&amp;page=&amp;view=List&amp;viewname=297&amp;orderby&quot;</span>
+        <span class="s2">&quot;=&amp;sortorder&quot;</span>
+        <span class="s2">&quot;=&amp;app=MARKETING&amp;tag_params=%5B%5D&amp;nolistcache=0&amp;list_headers=&amp;tag=&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-70'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-70'>#</a>
+      </div>
+      <p>Open a new tab and navigate to a new page</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">browser</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
+        <span class="s2">&quot;window.open(&#39;https://supportcrm.globitel.com/index.php?module=Project&amp;parent=&amp;page=&amp;view=List&amp;viewname=297&quot;</span>
+        <span class="s2">&quot;&amp;orderby=&amp;sortorder=&amp;app=MARKETING&amp;tag_params=%5B%5D&amp;nolistcache=0&amp;list_headers=&amp;tag=&#39;,&quot;</span>
+        <span class="s2">&quot;&#39;_blank&#39;)&quot;</span><span class="p">)</span>
+
+    <span class="n">actions</span> <span class="o">=</span> <span class="n">ActionChains</span><span class="p">(</span><span class="n">browser</span><span class="p">)</span>
+    <span class="n">actions</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">END</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-71'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-71'>#</a>
+      </div>
+      <p>listopen=browser.find_element(By.CLASS_NAME, &ldquo;app-icon fa fa-bars&rdquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-72'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-72'>#</a>
+      </div>
+      <p>Find all buttons on the page by their tag name</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">secound_tab</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">window_handles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">browser</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">first_tab_handle</span><span class="p">)</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">secound_tab</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------------------------- target elem --------------------------------&quot;</span><span class="p">)</span>
+
+    <span class="n">mp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;project name&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;Engineer name&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;Related To&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;Details&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;Duration&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;//*[@id=&quot;listview-actions&quot;]/div/div[3]/div/span/span[1]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; to &#39;</span><span class="p">)[</span>
+            <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting Test on Total project size = &quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Add a delay of 3 seconds</span>
+        <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;project name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                          <span class="s1">&#39;//*[@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                                              <span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[2]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                               <span class="s1">&#39;//*[@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                                                   <span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[4]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">if</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Engineer name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Engineer name is empty&quot;</span><span class="p">)</span>
+
+            <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Related To&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                            <span class="s1">&#39;//*[@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                                                <span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[8]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">if</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Related To&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Related To is empty&quot;</span><span class="p">)</span>
+
+            <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                        <span class="s1">&#39;//*[@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                                            <span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[6]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="k">if</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;status is empty&quot;</span><span class="p">)</span>
+
+            <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;//*[@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[1]/div/span[2]/a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;project : &quot;</span><span class="p">,</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;project name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">],</span> <span class="n">RED</span> <span class="o">+</span> <span class="s2">&quot;FAIL&quot;</span> <span class="o">+</span> <span class="n">RESET</span><span class="p">)</span>
+            <span class="n">FAIL</span> <span class="o">=</span> <span class="n">FAIL</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Add a delay of 3 seconds</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Details&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                         <span class="s1">&#39;//*[@id=&quot;detailView&quot;]/div/div/div/div[2]/div/div[&#39;</span>
+                                                         <span class="s1">&#39;3]/div/div[1]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">if</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Details&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Details is empty&quot;</span><span class="p">)</span>
+
+            <span class="n">from_Date</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;//*[@id=&quot;mCSB_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_container&quot;]/div[3]/table/tbody/tr[2]/td[2]/div/span&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">to_Date</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;//*[@id=&quot;mCSB_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_container&quot;]/div[3]/table/tbody/tr[4]/td[2]/div/span&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">date_format</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-73'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-73'>#</a>
+      </div>
+      <p>Get the current date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">to_Date</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">to_Date</span> <span class="o">=</span> <span class="n">current_date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+                <span class="n">to_Date</span> <span class="o">=</span> <span class="n">to_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">from_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">from_Date</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span>
+            <span class="n">to_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">to_Date</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span>
+            <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_date</span> <span class="o">-</span> <span class="n">from_date</span>
+
+            <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                 <span class="s1">&#39;//*[@id=&quot;mCSB_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_container&quot;]/div[1]/div[2]/button&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;project : &quot;</span><span class="p">,</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;project name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">],</span> <span class="n">RED</span> <span class="o">+</span> <span class="s2">&quot;FAIL&quot;</span> <span class="o">+</span> <span class="n">RESET</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fail Reason : </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">FAIL</span> <span class="o">=</span> <span class="n">FAIL</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;project : &quot;</span><span class="p">,</span> <span class="n">mp</span><span class="p">[</span><span class="s1">&#39;project name&#39;</span><span class="p">][</span><span class="n">number</span><span class="p">],</span> <span class="n">GREEN</span> <span class="o">+</span> <span class="s2">&quot;PASS&quot;</span> <span class="o">+</span> <span class="n">RESET</span><span class="p">)</span>
+        <span class="n">PASS</span> <span class="o">=</span> <span class="n">PASS</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">browser</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;arguments[0].scrollIntoView(true);&quot;</span><span class="p">,</span>
+                                   <span class="n">browser</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;//*[&#39;</span>
+                                                                  <span class="s1">&#39;@id=&quot;Project_listView_row_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                       <span class="n">number</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;]/td[1]&#39;</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">GREEN</span> <span class="o">+</span> <span class="s2">&quot;PASS: &quot;</span> <span class="o">+</span> <span class="n">RESET</span><span class="p">,</span> <span class="n">PASS</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">RED</span> <span class="o">+</span> <span class="s2">&quot;FAIL: &quot;</span> <span class="o">+</span> <span class="n">RESET</span><span class="p">,</span> <span class="n">FAIL</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">Gen_Document</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span>
+    <span class="n">current_week</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;Project Status Week &#39;</span> <span class="o">+</span> <span class="n">current_week</span> <span class="o">+</span> <span class="s1">&#39; 2023.docx&#39;</span>
+    <span class="k">if</span> <span class="n">PASS</span> <span class="o">==</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sending Email....&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-74'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-74'>#</a>
+      </div>
+      <p>uncomment the next line to send email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">send_email</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-75'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-75'>#</a>
+      </div>
+      <h1>Schedule the email to be sent every day at 9:00 AM</h1>
+<p>schedule.every().week.monday.at(&lsquo;01:00&rsquo;).do(lambda: send_email(&ldquo;Project Status Week 24 2023.docx&rdquo;))</p>
+<p>while True:
+    schedule.run_pending()
+    time.sleep(1)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-76'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-76'>#</a>
+      </div>
+      <p>Close the browser window</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Data_Analysis</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-77'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-77'>#</a>
+      </div>
+      <p>send_email(&lsquo;test.txt&rsquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Collect_Data</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-78'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-78'>#</a>
+      </div>
+      <p>Data_Analysis()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

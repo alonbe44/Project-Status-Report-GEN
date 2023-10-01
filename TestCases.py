@@ -1,10 +1,14 @@
+import os
 import smtplib
-# Author: Abedalrahman Rasem
-
 import unittest
 from datetime import datetime
+from docx import Document
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import RGBColor
+from main import send_email, Gen_Document
 
-from main import send_email
+# Author: Abedalrahman Rasem
+
 
 """
 Code Analysis
@@ -28,7 +32,8 @@ Additional aspects:
 """
 class TestSendEmail(unittest.TestCase):
     #  Tests that an email is sent successfully
-    def test_successful_email(self):
+    def test_successful_email(self,mocker):
+        self.mocker=mocker
         try:
             send_email('test.txt')
         except:
@@ -73,4 +78,97 @@ class TestSendEmail(unittest.TestCase):
         smtplib.SMTP.quit.assert_called_once()
 
 
+"""
+Code Analysis
 
+Objective:
+The Gen_Document function aims to generate a Word document containing a table with project status information. The function takes a hash map as input, which contains project details such as project name, engineer name, related to, status, and comments. The function highlights rows based on the status value and saves the document with a filename that includes the current week number.
+
+Inputs:
+- mp: a hash map containing project details such as project name, engineer name, related to, status, and comments.
+
+Flow:
+1. Create a new Word document.
+2. Add a header to the document.
+3. Add the current date on the left side of the header.
+4. Create a table with headers.
+5. Iterate over the hash map and add data to the table.
+6. Highlight rows based on the status value.
+7. Save the document with a filename that includes the current week number.
+8. Open the Word document.
+9. Modify the page size for landscape orientation.
+10. Adjust the width of the last column in the table.
+11. Save the modified document.
+
+Outputs:
+- A Word document containing a table with project status information.
+- The filename of the saved document.
+
+Additional aspects:
+- The function uses the docx library to create and modify Word documents.
+- The function highlights rows based on the status value using different colors.
+- The function adjusts the page size and column width for better document formatting.
+- The function saves the document with a filename that includes the current week number.
+- The function opens the saved document for further modification if needed.
+"""
+class TestGenDocument(unittest.TestCase):
+    #  Tests that a Word document is generated with a header and table
+    def test_generate_document(self):
+        mp = {
+            'project name': {1: 'Project 1', 2: 'Project 2'},
+            'Engineer name': {1: 'Engineer 1', 2: 'Engineer 2'},
+            'Related To': {1: 'Related To 1', 2: 'Related To 2'},
+            'status': {1: 'In Progress', 2: 'Completed'},
+            'Details': {1: 'Details 1', 2: 'Details 2'}
+        }
+        Gen_Document(mp)
+        self.assertTrue(os.path.exists('Project Status Week ' + str(datetime.now().isocalendar()[1]) + ' 2023.docx'))
+
+    #  Tests that the header alignment is set correctly
+    def test_header_alignment(self):
+        mp = {
+            'project name': {1: 'Project 1', 2: 'Project 2'},
+            'Engineer name': {1: 'Engineer 1', 2: 'Engineer 2'},
+            'Related To': {1: 'Related To 1', 2: 'Related To 2'},
+            'status': {1: 'In Progress', 2: 'Completed'},
+            'Details': {1: 'Details 1', 2: 'Details 2'}
+        }
+        Gen_Document(mp)
+        doc = Document('Project Status Week ' + str(datetime.now().isocalendar()[1]) + ' 2023.docx')
+        header = doc.sections[0].header
+        self.assertEqual(header.paragraphs[0].alignment, WD_PARAGRAPH_ALIGNMENT.CENTER)
+
+    #  Tests that the current date is added to the header
+    def test_add_current_date(self):
+        mp = {
+            'project name': {1: 'Project 1', 2: 'Project 2'},
+            'Engineer name': {1: 'Engineer 1', 2: 'Engineer 2'},
+            'Related To': {1: 'Related To 1', 2: 'Related To 2'},
+            'status': {1: 'In Progress', 2: 'Completed'},
+            'Details': {1: 'Details 1', 2: 'Details 2'}
+        }
+        Gen_Document(mp)
+        doc = Document('Project Status Week ' + str(datetime.now().isocalendar()[1]) + ' 2023.docx')
+        header = doc.sections[0].header
+        self.assertEqual(header.paragraphs[1].text, datetime.now().strftime("%B %d, %Y"))
+
+    #  Tests that rows are highlighted based on the status value
+    def test_highlight_rows(self):
+        mp = {
+            'project name': {1: 'Project 1', 2: 'Project 2'},
+            'Engineer name': {1: 'Engineer 1', 2: 'Engineer 2'},
+            'Related To': {1: 'Related To 1', 2: 'Related To 2'},
+            'status': {1: 'In Progress', 2: 'Completed'},
+            'Details': {1: 'Details 1', 2: 'Details 2'}
+        }
+        Gen_Document(mp)
+        doc = Document('Project Status Week ' + str(datetime.now().isocalendar()[1]) + ' 2023.docx')
+        table = doc.tables[0]
+        self.assertEqual(table.cell(1, 3).paragraphs[0].runs[0].font.color.rgb, RGBColor(0, 0, 255))
+        self.assertEqual(table.cell(2, 3).paragraphs[0].runs[0].font.color.rgb, RGBColor(0, 255, 0))
+
+    #  Tests that the function handles an empty mp
+    def test_empty_mp(self):
+        mp = {}
+        Gen_Document(mp)
+        self.assertTrue(os.path.exists('Project Status Week ' + str(datetime.now().isocalendar()[1]) + ' 2023.docx'))
