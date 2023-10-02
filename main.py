@@ -144,7 +144,7 @@ def Data_Analysis(mp):
     # Convert the dictionary to a pandas DataFrame
     df = pd.DataFrame(mp)
 
-    csv_filename = 'my_data '+str(datetime.now().isocalendar()[1])+' .csv'
+    csv_filename = 'my_data ' + str(datetime.now().isocalendar()[1]) + ' .csv'
 
     # Open the CSV file in write mode
     with open(csv_filename, 'w', newline='') as csv_file:
@@ -170,9 +170,6 @@ def Data_Analysis(mp):
     plt.ylabel('project name')
     plt.savefig('Project .png')
 
-
-
-
     # Perform data analysis or generate statistics using pandas methods
     summary_stats = df.describe()
     status_counts = df['status'].value_counts()
@@ -190,7 +187,20 @@ def Data_Analysis(mp):
 
     # Add a field instruction for the TOC
     toc_field_code = r'TOC \o "1-3" \h \z \u'
-    toc_xml = r'<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" w:rsidR="005A15A2" w:rsidRPr="005A15A2" w:rsidRDefault="005A15A2" w:rsidP="005A15A2"><w:pPr><w:pStyle w:val="TOCHeading"/><w:rPr><w:noProof/></w:rPr></w:pPr><w:r><w:t></w:t></w:r><w:r w:rsidR="005A15A2"><w:fldSimple w:instr="TOC \o &quot;1-3&quot; \h \z \u"><w:rPr><w:noProof/></w:rPr></w:fldSimple></w:r></w:p>'
+    toc_xml = (r'<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+               r'xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" '
+               r'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '
+               r'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '
+               r'xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" '
+               r'xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" '
+               r'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" '
+               r'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" '
+               r'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" '
+               r'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" w:rsidR="005A15A2" '
+               r'w:rsidRPr="005A15A2" w:rsidRDefault="005A15A2" w:rsidP="005A15A2"><w:pPr><w:pStyle '
+               r'w:val="TOCHeading"/><w:rPr><w:noProof/></w:rPr></w:pPr><w:r><w:t></w:t></w:r><w:r '
+               r'w:rsidR="005A15A2"><w:fldSimple w:instr="TOC \o &quot;1-3&quot; \h \z '
+               r'\u"><w:rPr><w:noProof/></w:rPr></w:fldSimple></w:r></w:p>')
     toc_paragraph = parse_xml(toc_xml)
     doc.element.body.insert(2, toc_paragraph)
 
@@ -265,9 +275,6 @@ def Data_Analysis(mp):
 
     # Save the document
     doc.save('data_analysis_report.docx')
-
-
-
 
 
 # Data_Analysis(mp)
@@ -435,7 +442,7 @@ def Gen_Document(mp):
 # the size variable based on the number of projects on the web page.
 
 def Collect_Data():
-    global PASS, FAIL, username, password, GREEN, RED, RESET, size
+    global PASS, FAIL, username, password, GREEN, RED, RESET, size, to_date
     # Create EdgeOptions object
     options = Options()
 
@@ -489,8 +496,8 @@ def Collect_Data():
     print("Starting Test on Total project size = ", size)
     number = 1  # Initialize the loop variable
 
-    for number in range(1,size):
-    #while number < size:
+    for number in range(1, size):
+        # while number < size:
         time.sleep(3)  # Add a delay of 3 seconds
         mp['project name'][number] = browser.find_element(By.XPATH,
                                                           '//*[@id="Project_listView_row_' + str(
@@ -499,10 +506,10 @@ def Collect_Data():
         if number == 23:
             print("DEBUG")
 
-        if mp['project name'][number] =="Test":
-            PASS=PASS+1
-            #number+=1
-            #i+=1
+        if mp['project name'][number] == "Test":
+            PASS = PASS + 1
+            # number+=1
+            # i+=1
             continue
         try:
             mp['Engineer name'][number] = browser.find_element(By.XPATH,
@@ -511,14 +518,10 @@ def Collect_Data():
             if mp['Engineer name'][number] == "":
                 print("Engineer name is empty")
 
-
-
-
             mp['Related To'][number] = browser.find_element(By.XPATH,
                                                             '//*[@id="Project_listView_row_' + str(
                                                                 number) + '"]/td[7]/span[1]/span').text
-            #update to 8 if working in allproject or 7
-
+            # update to 8 if working in allproject or 7
 
             if mp['Related To'][number] == "":
                 print("Related To is empty")
@@ -529,9 +532,9 @@ def Collect_Data():
 
             if mp['status'][number] == "":
                 print("status is empty")
-                #//*[@id="mCSB_68_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
-                #//*[@id="mCSB_66_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
-                #//*[@id="mCSB_67_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
+                # //*[@id="mCSB_68_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
+                # //*[@id="mCSB_66_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
+                # //*[@id="mCSB_67_container"]/div[3]/table/tbody/tr[5]/td[2]/div/span/span
                 # mp['status'][number] = browser.find_element(By.XPATH,
                 #                                             '//*[@id="Project_listView_row_' + str(
                 #                                                 number) + '"]/td[6]').text
@@ -551,24 +554,26 @@ def Collect_Data():
                                                          '3]/div/div[1]').text
             if mp['Details'][number] == "":
                 print("Details is empty")
-#//*[@id="mCSB_32_container"]/div[3]/table/tbody/tr[2]/td[2]/div/span
-            # from_Date = browser.find_element(By.XPATH, '//*[@id="mCSB_' + str(
+            # //*[@id="mCSB_32_container"]/div[3]/table/tbody/tr[2]/td[2]/div/span
+            # from_date = browser.find_element(By.XPATH, '//*[@id="mCSB_' + str(
             #     i) + '_container"]/div[3]/table/tbody/tr[2]/td[2]/div/span').text
-            # to_Date = browser.find_element(By.XPATH, '//*[@id="mCSB_' + str(
+            # to_date = browser.find_element(By.XPATH, '//*[@id="mCSB_' + str(
             #     i) + '_container"]/div[3]/table/tbody/tr[4]/td[2]/div/span').text
-                #//*[@id="Project_listView_row_32"]/td[3]/span[1]/span
-            from_Date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_'+str(number)+'"]/td[3]/span[1]/span').text
-            to_Date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_'+str(number)+'"]/td[5]/span[1]/span').text
+            # //*[@id="Project_listView_row_32"]/td[3]/span[1]/span
+            from_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                number) + '"]/td[3]/span[1]/span').text
+            to_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                number) + '"]/td[5]/span[1]/span').text
             date_format = "%Y-%m-%d"
             # Get the current date
             current_date = datetime.now().date()
 
-            if to_Date == '':
-                to_Date = current_date + timedelta(days=90)
-                to_Date = to_date.strftime("%Y-%m-%d")
+            if to_date == '':
+                to_date = current_date + timedelta(days=90)
+                to_date = to_date.strftime("%Y-%m-%d")
 
-            from_date = datetime.strptime(from_Date, date_format)
-            to_date = datetime.strptime(to_Date, date_format)
+            from_date = datetime.strptime(from_date, date_format)
+            to_date = datetime.strptime(to_date, date_format)
             mp['Duration'][number] = to_date - from_date
 
             browser.find_element(By.XPATH,
@@ -577,11 +582,12 @@ def Collect_Data():
             print("project : ", mp['project name'][number], RED + "FAIL" + RESET)
             print(f"Fail Reason : {e}")
             FAIL = FAIL + 1
-            i+=1
+            i += 1
             continue
 
         i = i + 1
-        print("project : ", mp['project name'][number], GREEN + "PASS" + RESET+" Progress: "+str((number/size)*100))
+        print("project : ", mp['project name'][number],
+              GREEN + "PASS" + RESET + " Progress: " + str((number / size) * 100))
         PASS = PASS + 1
 
         if number > 3:
@@ -589,25 +595,12 @@ def Collect_Data():
                                    browser.find_element(By.XPATH, '//*['
                                                                   '@id="Project_listView_row_' + str(
                                        number - 3) + '"]/td[1]'))
-        # try:
-        #     if number==size-1:
-        #         browser.execute_script("window.scrollTo(0, 0);")
-        #         next_btn= browser.find_element(By.XPATH,'//*[@id="NextPageButton"]')#.click()
-        #         if next_btn.is_enabled():
-        #             next_btn.click()
-        #             print("next page")
-        #         else:
-        #             print("end of content")
-        #         size = int(
-        #             browser.find_element(By.XPATH, '//*[@id="listview-actions"]/div/div[3]/div/span/span[1]').text.split(
-        #                 ' to ')[
-        #                 1]) + 1
-        # except:
-        #     continue
+        # try: if number==size-1: browser.execute_script("window.scrollTo(0, 0);") next_btn= browser.find_element(
+        # By.XPATH,'//*[@id="NextPageButton"]')#.click() if next_btn.is_enabled(): next_btn.click() print("next
+        # page") else: print("end of content") size = int( browser.find_element(By.XPATH,
+        # '//*[@id="listview-actions"]/div/div[3]/div/span/span[1]').text.split( ' to ')[ 1]) + 1 except: continue
 
-        #number+=1
-
-
+        # number+=1
 
     print(GREEN + "PASS: " + RESET, PASS, "/", size - 1)
     print(RED + "FAIL: " + RESET, FAIL, "/", size - 1)
@@ -618,7 +611,7 @@ def Collect_Data():
     if PASS == size - 1:
         print("Sending Email....")
         # uncomment the next line to send email
-        #send_email(filename)
+        # send_email(filename)
     # #Schedule the email to be sent every day at 9:00 AM
     # schedule.every().week.monday.at('01:00').do(lambda: send_email("Project Status Week 24 2023.docx"))
     #
@@ -692,11 +685,6 @@ def data_train():
         actend[num] = to_date - from_date
 
     print("pass")
-
-
-# send_email('test.txt')
-# {1: datetime.timedelta(days=56), 2: datetime.timedelta(days=56), 3: datetime.timedelta(days=56), 4: datetime.timedelta(days=42), 5: datetime.timedelta(days=56), 6: datetime.timedelta(days=56), 7: datetime.timedelta(days=39), 8: datetime.timedelta(days=175), 9: datetime.timedelta(days=30), 10: datetime.timedelta(days=35)}
-# {1: datetime.timedelta(days=355), 2: datetime.timedelta(days=85), 3: datetime.timedelta(days=49), 4: datetime.timedelta(days=9), 5: datetime.timedelta(days=27), 6: datetime.timedelta(days=18), 7: datetime.timedelta(days=123), 8: datetime.timedelta(days=652), 9: datetime.timedelta(days=23), 10: datetime.timedelta(days=15)}
 
 
 Collect_Data()
