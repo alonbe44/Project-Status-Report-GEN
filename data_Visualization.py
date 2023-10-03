@@ -214,9 +214,7 @@ def save_plot(plot, file_name, dpi=400, format=None, bbox_inches=None):
 #
 # Outputs Diagrams: Various diagrams saved in the "Diagrams" directory, including bar charts, pie charts, histograms,
 # box plots, line charts, violin plots, and stacked bar charts.
-
-
-def Data_Visualization(map_data):
+def Data_VisualizationDiagrams(map_data):
     """
     Generate various data visualizations based on the given map_data.
 
@@ -319,7 +317,8 @@ def Data_Visualization(map_data):
         plt.ylabel('Project Duration (Days)')
         plt.title('Project Duration by Department')
         plt.xticks(rotation=45)
-        save_plot(plt, os.path.join(output_directory, 'project_duration_by_department_violin_plot.png'))  # Save the chart
+        save_plot(plt,
+                  os.path.join(output_directory, 'project_duration_by_department_violin_plot.png'))  # Save the chart
         logging.debug("project_duration_by_department_violin_plot Finished")
 
         # Visualization 10: Stacked Bar Chart for Project Status by Engineer
@@ -331,7 +330,8 @@ def Data_Visualization(map_data):
         plt.title('Project Status by Engineer')
         plt.xticks(rotation=45)
         plt.legend(title='Project Status', loc='upper right')
-        save_plot(plt, os.path.join(output_directory, 'project_status_by_engineer_stacked_bar_chart.png'))  # Save the chart
+        save_plot(plt,
+                  os.path.join(output_directory, 'project_status_by_engineer_stacked_bar_chart.png'))  # Save the chart
         logging.debug('project_status_by_engineer_stacked_bar_chart Finished')
 
         return "Data visualization completed successfully"
@@ -339,4 +339,4 @@ def Data_Visualization(map_data):
         return "Data visualization failed"
 
 
-Data_Visualization(mp)
+Data_VisualizationDiagrams(mp)

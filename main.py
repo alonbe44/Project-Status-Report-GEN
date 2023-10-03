@@ -1,3 +1,9 @@
+#  Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+#  Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+#  Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+#  Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+#  Vestibulum commodo. Ut rhoncus gravida arcu.
+
 import csv
 import os
 from datetime import datetime, timedelta
@@ -26,6 +32,9 @@ from docx import Document
 from docx.shared import Inches
 import numpy as np
 
+from Data_Cleaning import Data_Cleaning
+from data_Visualization import mp
+
 # Global variables
 size = 33
 GREEN = "\033[32m"
@@ -42,6 +51,8 @@ end = {}
 preduction_period = {}
 
 
+# Copyright notice and author information
+# Copyright (c) 2023 Abedalrahman Rasem
 def send_email(fn):
     """
     Sends an email with an attachment.
@@ -50,6 +61,8 @@ def send_email(fn):
         fn (str): The filename of the attachment to be sent.
 
     """
+    # Copyright notice and author information
+    # Copyright (c) 2023 Abedalrahman Rasem
     try:
         # Create a message object
         msg = MIMEMultipart()
@@ -109,7 +122,8 @@ def send_email(fn):
         raise exception
         # print("Error message:", str(error))
 
-
+# Copyright notice and author information
+# Copyright (c) 2023 Abedalrahman Rasem
 # Objective: The Gen_Document function aims to generate a Word document containing a table with project status
 # information. The function takes a hash map as input, which contains project details such as project name,
 # engineer name, related to, status, and comments. The function highlights the rows of the table based on the status
@@ -138,9 +152,23 @@ def send_email(fn):
 # - The function uses RGBColor to set the font color of the status cell based on the status value.
 # - The function assumes that the table is the first and only table in the document.
 # - The function adjusts the width of the last column in the table to 4 inches.
-
-
 def Data_Analysis(mp):
+    """
+    Generates a data analysis report based on the given dictionary.
+
+    Parameters:
+    - mp (dict): A dictionary containing data for analysis.
+
+    Returns:
+    - None
+
+    This function takes a dictionary (mp) and performs various data analysis tasks. It converts the dictionary into a
+    pandas DataFrame, writes the data to a CSV file, creates scatter plots, generates summary statistics, and creates
+    a Word document with tables and charts. The function does not return any value.
+    """
+    # Copyright notice and author information
+    # Copyright (c) 2023 Abedalrahman Rasem
+
     # Convert the dictionary to a pandas DataFrame
     df = pd.DataFrame(mp)
 
@@ -276,8 +304,8 @@ def Data_Analysis(mp):
     # Save the document
     doc.save('data_analysis_report.docx')
 
-
-# Data_Analysis(mp)
+# Copyright notice and author information
+# Copyright (c) 2023 Abedalrahman Rasem
 # Objective: - The objective of the Gen_Document function is to generate a Word document containing a table with
 # project status information.
 #
@@ -305,6 +333,19 @@ def Data_Analysis(mp):
 # - The function adjusts the page size and column width for better document formatting.
 # - The function saves the modified document with a filename based on the current week number.
 def Gen_Document(mp):
+    """
+    Generates a Word document containing a project status report based on the given hash map.
+
+    Parameters:
+        - mp (dict): A hash map containing project data. The keys represent the project number,
+                     and the values are dictionaries containing project details such as project name,
+                     engineer name, related project, status, and comments.
+
+    Returns:
+        None
+    """
+    # Copyright notice and author information
+    # Copyright (c) 2023 Abedalrahman Rasem
     if not mp:
         return
     # Create a new Word document
@@ -414,7 +455,8 @@ def Gen_Document(mp):
     doc.save(filename)
     # Data_Analysis(mp)
 
-
+# Copyright notice and author information
+# Copyright (c) 2023 Abedalrahman Rasem
 # Objective: The objective of the function is to collect data from a web page, create a Word document, and highlight
 # rows in the table based on the status value. The function also prints the number of passed and failed projects,
 # generates a file name, and sends an email if all projects pass.
@@ -442,6 +484,19 @@ def Gen_Document(mp):
 # the size variable based on the number of projects on the web page.
 
 def Collect_Data():
+    """
+    Collects data from a web page and performs data analysis.
+
+    This function collects data from a web page using the Edge browser. It navigates to a login page, enters the provided credentials, and selects the desired tab. Then, it retrieves data from multiple elements on the page and stores it in a dictionary. It also performs data analysis and generates a document based on the collected data.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
+    # Copyright notice and author information
+    # Copyright (c) 2023 Abedalrahman Rasem
     global PASS, FAIL, username, password, GREEN, RED, RESET, size, to_date
     # Create EdgeOptions object
     options = Options()
@@ -624,6 +679,10 @@ def Collect_Data():
     browser.quit()
 
 
+
+cleaned_data = Data_Cleaning(mp)
+print(cleaned_data)
+
 def data_train():
     global startDate, actend, end, preduction_period
     # Create EdgeOptions object
@@ -687,8 +746,13 @@ def data_train():
     print("pass")
 
 
-Collect_Data()
-# Data_Analysis()
+#Collect_Data()
+
+
+
+
+#new Idea about when the prj st , end , act end . who finished project faster .
+
 
 
 # # Prepare the training data
