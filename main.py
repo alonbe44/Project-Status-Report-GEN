@@ -14,6 +14,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from multiprocessing import context
+
+import pyttsx3
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.opc.oxml import parse_xml
@@ -680,8 +682,30 @@ def Collect_Data():
 
 
 
-cleaned_data = Data_Cleaning(mp)
-print(cleaned_data)
+def Data_TTS(map=mp):
+    """
+    Reads data as text and converts it to speech.
+
+    Args:
+        mp: The data to be converted to speech.
+
+    Returns:
+        None
+    """
+    # Your data text-to-speech code here
+    # ...
+ # Initialize the text-to-speech engine
+    engine = pyttsx3.init()
+
+    # Set the properties of the speech
+    engine.setProperty('rate', 150)  # Speed of speech (words per minute)
+
+    # Convert the data to speech
+    engine.say(map)
+    engine.runAndWait()
+
+# cleaned_data = Data_Cleaning(mp)
+# print(cleaned_data)
 
 def data_train():
     global startDate, actend, end, preduction_period
