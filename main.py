@@ -6,6 +6,7 @@
 
 import csv
 import os
+import shutil
 from datetime import datetime, timedelta
 import pandas as pd
 import time
@@ -28,14 +29,13 @@ from selenium.webdriver.common.keys import Keys
 from docx import Document
 from selenium.webdriver.edge.options import Options
 import tensorflow as tf
-import pandas as pd
 import matplotlib.pyplot as plt
 from docx import Document
 from docx.shared import Inches
 import numpy as np
 
 from Data_Cleaning import Data_Cleaning
-from data_Visualization import mp
+from data_Visualization import mp, Data_VisualizationDiagrams
 
 # Global variables
 size = 33
@@ -171,6 +171,7 @@ def Data_Analysis(mp):
     # Copyright notice and author information
     # Copyright (c) 2023 Abedalrahman Rasem
 
+
     # Convert the dictionary to a pandas DataFrame
     df = pd.DataFrame(mp)
 
@@ -188,17 +189,17 @@ def Data_Analysis(mp):
 
     print(f'{csv_filename} has been created.')
 
-    # Scatter plot with day against tip
-    plt.plot(mp['status'])
-    plt.plot(mp['project name'])
-
-    # Adding Title to the Plot
-    plt.title("Scatter Plot")
-
-    # Setting the X and Y labels
-    plt.xlabel('status')
-    plt.ylabel('project name')
-    plt.savefig('Project .png')
+    # # Scatter plot with day against tip
+    # plt.plot(mp['status'])
+    # plt.plot(mp['project name'])
+    #
+    # # Adding Title to the Plot
+    # plt.title("Scatter Plot")
+    #
+    # # Setting the X and Y labels
+    # plt.xlabel('status')
+    # plt.ylabel('project name')
+    # plt.savefig('Project .png')
 
     # Perform data analysis or generate statistics using pandas methods
     summary_stats = df.describe()
@@ -306,6 +307,8 @@ def Data_Analysis(mp):
     # Save the document
     doc.save('data_analysis_report.docx')
 
+
+
 # Copyright notice and author information
 # Copyright (c) 2023 Abedalrahman Rasem
 # Objective: - The objective of the Gen_Document function is to generate a Word document containing a table with
@@ -334,7 +337,7 @@ def Data_Analysis(mp):
 # - The function highlights rows in the table based on the status value.
 # - The function adjusts the page size and column width for better document formatting.
 # - The function saves the modified document with a filename based on the current week number.
-def Gen_Document(mp):
+def Gen_Document(mp,filename):
     """
     Generates a Word document containing a project status report based on the given hash map.
 
@@ -350,13 +353,19 @@ def Gen_Document(mp):
     # Copyright (c) 2023 Abedalrahman Rasem
     if not mp:
         return
+    if not filename:
+        current_week = str(datetime.now().isocalendar()[1])
+        filename = 'Project Status Week ' + current_week + ' 2023.docx'
+
+    # Creating Diagrams for the project Details
+    #Data_VisualizationDiagrams(mp)
     # Create a new Word document
     doc = Document()
 
     # Add a header to the document
     header = doc.sections[0].header
     header_paragraph = header.paragraphs[0]
-    header_paragraph.text = "Globitel Project Status Report"
+    header_paragraph.text = "Globitel "+filename.replace(".docx","")+ " Report"
     header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     header_paragraph.style = doc.styles["Heading 1"]
 
@@ -366,10 +375,10 @@ def Gen_Document(mp):
     date_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
     # Add a new paragraph with a line break and additional text
     paragraph = doc.add_paragraph()
-    paragraph.add_run(f"Total Running Projects {size}")
+    paragraph.add_run(f"Total Running Projects {size-1}")
 
     # Create a table with headers
-    table = doc.add_table(rows=1, cols=5)
+    table = doc.add_table(rows=1, cols=7)
     table.style = 'Table Grid'
     header_cells = table.rows[0].cells
     header_cells[0].text = 'project name'
@@ -377,6 +386,10 @@ def Gen_Document(mp):
     header_cells[2].text = 'Related To'
     header_cells[3].text = 'status'
     header_cells[4].text = 'Comments'
+    header_cells[5].text = 'Start Date'
+    header_cells[6].text = 'End Date'
+
+
 
     # Set the header cells' formatting
     for cell in header_cells:
@@ -385,7 +398,7 @@ def Gen_Document(mp):
         cell.paragraphs[0].runs[0].bold = True
         cell.paragraphs[0].runs[0].font.size = Pt(12)
 
-    status_cell = table.cell(0, 4)
+    status_cell = table.cell(0, 5)
     status_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
     status_cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     status_cell.paragraphs[0].runs[0].bold = True
@@ -403,6 +416,9 @@ def Gen_Document(mp):
                                                  '')  # Get engineer name, defaulting to empty string if not found
         row_cells[3].text = mp['status'].get(number, '')  # Get status, defaulting to empty string if not found
         row_cells[4].text = mp['Details'].get(number, '')
+        row_cells[5].text = str(mp['Start Date'].get(number,''))
+        row_cells[6].text = str(mp['End Date'].get(number,''))
+
 
     # Highlight rows based on the status value
     for row in table.rows:
@@ -428,8 +444,7 @@ def Gen_Document(mp):
             status_cell.paragraphs[0].runs[0].font.size = Pt(12)
             status_cell.paragraphs[0].runs[0].font.color.rgb = highlight_color
 
-    current_week = str(datetime.now().isocalendar()[1])
-    filename = 'Project Status Week ' + current_week + ' 2023.docx'
+
     doc.save(filename)
 
     # Open the Word document
@@ -456,6 +471,7 @@ def Gen_Document(mp):
     # Save the modified document
     doc.save(filename)
     # Data_Analysis(mp)
+
 
 # Copyright notice and author information
 # Copyright (c) 2023 Abedalrahman Rasem
@@ -527,7 +543,7 @@ def Collect_Data():
         "https://supportcrm.globitel.com/index.php?module=Project&view=List&viewname=183&app=MARKETING")
     # Open a new tab and navigate to a new page
     browser.execute_script(
-        "window.open('https://supportcrm.globitel.com/index.php?module=Project&view=List&viewname=183&app=MARKETING',"
+        "window.open('https://supportcrm.globitel.com/index.php?module=Project&parent=&page=1&view=List&viewname=183&orderby=&sortorder=&app=MARKETING&search_params=%5B%5B%5B%22cf_orf_number%22%2C%22c%22%2C%22NA.2023%22%5D%5D%5D&tag_params=%5B%5D&nolistcache=0&list_headers=%5B%22projectname%22%2C%22startdate%22%2C%22assigned_user_id%22%2C%22targetenddate%22%2C%22projectstatus%22%2C%22linktoaccountscontacts%22%2C%22actualenddate%22%2C%22modifiedtime%22%2C%22modifiedby%22%2C%22cf_orf_number%22%5D&tag=',"
         "'_blank')")
 
     actions = ActionChains(browser)
@@ -560,8 +576,8 @@ def Collect_Data():
                                                           '//*[@id="Project_listView_row_' + str(
                                                               number) + '"]/td[2]').text
 
-        if number == 23:
-            print("DEBUG")
+        # if number == 23:
+        #     print("DEBUG")
 
         if mp['project name'][number] == "Test":
             PASS = PASS + 1
@@ -617,13 +633,19 @@ def Collect_Data():
             # to_date = browser.find_element(By.XPATH, '//*[@id="mCSB_' + str(
             #     i) + '_container"]/div[3]/table/tbody/tr[4]/td[2]/div/span').text
             # //*[@id="Project_listView_row_32"]/td[3]/span[1]/span
-            from_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
-                number) + '"]/td[3]/span[1]/span').text
-            to_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
-                number) + '"]/td[5]/span[1]/span').text
-            date_format = "%Y-%m-%d"
-            # Get the current date
-            current_date = datetime.now().date()
+            try:
+                from_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                    number) + '"]/td[3]/span[1]/span').text
+                to_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                    number) + '"]/td[5]/span[1]/span').text
+                date_format = "%Y-%m-%d"
+                # Get the current date
+                current_date = datetime.now().date()
+            except:
+                to_date = current_date + timedelta(days=90)
+                to_date = to_date.strftime("%Y-%m-%d")
+                from_date=current_date.strftime("%Y-%m-%d")
+
 
             if to_date == '':
                 to_date = current_date + timedelta(days=90)
@@ -631,7 +653,9 @@ def Collect_Data():
 
             from_date = datetime.strptime(from_date, date_format)
             to_date = datetime.strptime(to_date, date_format)
-            mp['Duration'][number] = to_date - from_date
+            mp['Duration'][number] = time.strftime((to_date - from_date))
+
+
 
             browser.find_element(By.XPATH,
                                  '//*[@id="mCSB_' + str(i) + '_container"]/div[1]/div[2]/button').click()
@@ -677,7 +701,7 @@ def Collect_Data():
     #     time.sleep(1)
 
     # Close the browser window
-    Data_Analysis(mp)
+    #Data_Analysis(mp)
     browser.quit()
 
 
@@ -768,13 +792,258 @@ def data_train():
         actend[num] = to_date - from_date
 
     print("pass")
-
-
+mp={'project name': {1: 'Accudial call accounting - extension lic...', 2: 'SpeechLog Al Rajhi Bank', 3: 'Display line status /E911', 4: 'E911 (Caller Barring Status)', 5: 'E911 integration with XLM', 6: 'Maintenance Visit', 7: 'Orange – PPMD CR', 8: 'Speech Log expansion', 9: 'Provisioning Mediator (PM)', 10: 'IVR professional recording', 11: 'SpeechLog', 12: 'Speech log Recording', 13: 'Speech Log expansion- Soltek', 14: 'Speech Log Recorder (HA)', 15: 'Speech Log Expansion', 16: 'SpeechLog (34 IP)', 17: 'SpeechLog', 18: 'Social Security Investment Fund – Speech...', 19: 'Host Monitor', 20: 'Speech Log expansion Arab Bank', 21: 'Archiving Module including the decryptio...', 22: 'Speech Log Voice Recorder RHC', 23: 'SpeechLog (Expansion 4 Analog)', 24: 'SpeechLog (Expansion 8 IPs)'}, 'Engineer name': {1: 'Bilal Al-Noori', 2: 'Abdulrahman Hasan', 3: 'Hamzeh Shwemeh', 4: 'Hamzeh Shwemeh', 5: 'Hamzeh Shwemeh', 6: 'Bilal Al-Noori', 7: 'Yousif Rayyan', 8: 'Osama Gharbieh', 9: 'aladdin Shishani', 10: 'Osama Gharbieh', 11: 'CCE', 12: 'Abdulrahman Hasan', 13: 'Osama Gharbieh', 14: 'Bilal Al-Noori', 15: 'Bilal Al-Noori', 16: 'Abdulrahman Hasan', 17: 'Abdulrahman Hasan', 18: 'Abdulrahman Hasan', 19: 'Ahmad AlHasan', 20: 'Osama Gharbieh', 21: 'Abdellateef Ibrahim', 22: 'Abdulrahman Hasan', 23: 'CCE', 24: 'Abdulrahman Hasan'}, 'Related To': {1: 'Ministry of Tourism and Antiquities', 2: 'Al Rajhi Bank', 3: 'PSD', 4: 'Orange', 5: 'PSD', 6: 'Nabulsi - Burger Makers', 7: 'Orange Jo', 8: 'Housing Bank', 9: 'Orange Jo', 10: 'ISTD', 11: 'Unitel (Palace of Justice)', 12: 'Arab Bank', 13: 'Safwa Bank', 14: 'Housing Bank', 15: 'Housing Bank', 16: 'ABC BANK BH', 17: 'Al Rajhi Bank', 18: 'Social Security', 19: 'Extensya-SL', 20: 'Arab Bank', 21: 'Extensya-SL', 22: 'The Royal Hashemite Court (RHC)', 23: 'Global Telecommunication Technology (Alm...', 24: 'VTEL'}, 'status': {1: 'Completed', 2: 'In Progress', 3: 'Completed', 4: 'In Progress', 5: 'In Progress', 6: 'Completed', 7: 'Completed', 8: 'Completed', 9: 'Completed', 10: 'Completed', 11: 'On Hold', 12: 'Completed', 13: 'Completed', 14: 'Completed', 15: 'Completed', 16: 'Completed', 17: 'Archived', 18: 'Completed', 19: 'Completed', 20: 'Completed', 21: 'Completed', 22: 'Completed', 23: 'Completed', 24: 'Completed'}, 'Details': {1: 'Ab\nAbdelrahman Rasem\n2023-12-05 06:29 AM (12 days ago)', 2: 'Ab\nAbdelrahman Rasem\n2023-12-05 06:22 AM (12 days ago)', 3: 'Ab\nAbdelrahman Rasem\n2023-12-04 12:07 PM (12 days ago)', 4: 'Ab\nAbdelrahman Rasem\n2023-12-04 09:15 AM (13 days ago)', 5: 'Ab\nAbdelrahman Rasem\n2023-11-27 09:37 AM (20 days ago)', 6: 'Ab\nAbdelrahman Rasem\n2023-11-21 06:07 AM (26 days ago)', 7: 'Mo\nMohammad Farah\n2023-11-06 09:10 AM (1 month ago)', 8: 'Abdelrahman Rasem\n2023-11-01 12:08 PM (1 month ago)', 9: 'Mo\nMohammad Farah\n2023-10-22 06:32 AM (1 month ago)', 10: 'Abdelrahman Rasem\n2023-10-23 08:10 AM (1 month ago)', 11: 'Ab\nAbdelrahman Rasem\n2023-10-10 06:19 AM (2 months ago)', 12: 'Ab\nAbdelrahman Rasem\n2023-10-03 10:57 AM (2 months ago)', 13: 'Mohammad Farah\n2023-09-12 05:57 AM (3 months ago)', 14: 'Abdelrahman Rasem\n2023-08-29 06:16 AM (3 months ago)', 15: 'Abdelrahman Rasem\n2023-08-29 06:15 AM (3 months ago)', 16: 'Mo\nMohammad Farah\n2023-08-17 11:34 AM (4 months ago)', 17: 'Mo\nMohammad Farah\n2023-08-15 06:34 AM (4 months ago)', 18: 'Abdelrahman Rasem\n2023-06-26 11:20 AM (5 months ago)', 19: 'Ab\nAbdelrahman Rasem\n2023-06-22 09:47 AM (5 months ago)', 20: 'Abdelrahman Rasem\n2023-06-06 07:09 AM (6 months ago)', 21: 'Abdelrahman Rasem\n2023-06-11 08:36 AM (6 months ago)', 22: 'Ab\nAbdelrahman Rasem\n2023-04-10 10:22 AM (8 months ago)', 23: 'Mo\nMohammad Farah\n2023-02-22 08:52 AM (9 months ago)', 24: 'Mo\nMohammad Farah\n2023-01-23 3:20 PM (10 months ago)'}, 'Duration': {1: 49, 2: 84, 3: 81, 4: 59, 5: 101, 6: 21, 7: 55, 8: 42, 9: 49, 10: 35, 11: 59, 12: 56, 13: 54, 14: 42, 15: 42, 16: 40, 17: 395, 18: 56, 19: 56, 20: 35, 21: 26, 22: 56, 23: 58, 24: 31}}
+#Gen_Document(mp)
 #Collect_Data()
 
+# Data_Cleaning(mp)
+#
+# data_train()
+# NLP_DeepLearning()
+
+def savecsv(mp):
+
+    with open('Project Statistics .csv', 'w') as csvfile:
+
+
+        # Write the dictionary to a CSV file
+        with open('Project Statistics .csv', 'w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+
+            # Write the header row
+            header_row =['project name', 'Engineer name',
+          'Related To', 'status', 'Details', 'Start Date', 'End Date' ,'DEP']
+            writer.writerow(header_row)
+
+            # Write the data rows
+            for a in mp.keys():
+                for i in range (1 ,max(mp[a].keys())):
+                    writer.writerow([
+                        mp['project name'][i],mp['Engineer name'][i],
+                        mp['Related To'][i],mp['status'][i],
+                        mp['Details'][i],mp['Start Date'][i],mp['End Date'][i],mp['DEP'][i]
+                    ])
 
 
 
+
+
+
+
+def Data_Categorization(projects_year):
+
+    # Copyright notice and author information
+    # Copyright (c) 2023 Abedalrahman Rasem
+    global PASS, FAIL, username, password, GREEN, RED, RESET, size, to_date
+
+    # Create EdgeOptions object
+    options = Options()
+    #projects_year = 2019
+    # Create a new instance of the Edge driver
+    browser = webdriver.Edge(options=options)
+
+    # Navigate to the login page
+    browser.get("https://supportcrm.globitel.com/index.php")
+    browser.maximize_window()
+
+    # Find the username and password input fields and enter your credentials
+    username_input = browser.find_element(By.ID, "username")
+    username_input.send_keys(username)
+    password_input = browser.find_element(By.ID, "password")
+    password_input.send_keys(password)
+    password_input.send_keys(Keys.RETURN)
+
+    # select first tab to close it.
+    first_tab_handle = browser.window_handles[0]
+
+    # waiting for page to load.
+    browser.implicitly_wait(3)
+
+    browser.get(
+        "https://supportcrm.globitel.com/index.php?module=Project&view=List&viewname=183&app=MARKETING")
+    # Open a new tab and navigate to a new page
+    browser.execute_script(
+        "window.open('https://supportcrm.globitel.com/index.php?module=Project&parent=&page=1&view=List&viewname=183&orderby=&sortorder=&app=MARKETING&search_params=%5B%5B%5B%22cf_orf_number%22%2C%22c%22%2C%22" +
+        str(projects_year)
+        + "%22%5D%5D%5D&tag_params=%5B%5D&nolistcache=0&list_headers=%5B%22projectname%22%2C%22startdate%22%2C%22assigned_user_id%22%2C%22projectstatus%22%2C%22linktoaccountscontacts%22%2C%22actualenddate%22%2C%22cf_department%22%2C%22modifiedby%22%2C%22cf_orf_number%22%2C%22modifiedtime%22%5D&tag=',"
+          "'_blank')")
+    actions = ActionChains(browser)
+    actions.send_keys(Keys.END).perform()
+
+
+    # Find all buttons on the page by their tag name
+    secound_tab = browser.window_handles[1]
+
+    browser.switch_to.window(first_tab_handle)
+    browser.close()
+    browser.switch_to.window(secound_tab)
+
+    print("---------------------------------- Year : "+ str(projects_year) +" --------------------------------")
+
+    # Specify the name of the new folder
+    folder_name = "Projects_" + str(projects_year)
+
+    # Create the folder in the current working directory
+    folder_path = os.path.join(os.getcwd(), folder_name)
+    os.makedirs(folder_path, exist_ok=True)
+
+    mp = {'project name': {}, 'Engineer name': {},
+          'Related To': {}, 'status': {}, 'Details': {}, 'Start Date': {}, 'End Date':{} ,'DEP':{} }
+
+    i = 9
+    size = int(
+        browser.find_element(By.XPATH, '//*[@id="listview-actions"]/div/div[3]/div/span/span[1]').text.split(' to ')[
+            1]) + 1
+    print("Starting Test on Total project size = ", size-1)
+    number = 1  # Initialize the loop variable
+
+    for number in range(1, size):
+        # while number < size:
+        time.sleep(3)  # Add a delay of 3 seconds
+
+        mp['DEP'][number] = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+            number) + '"]/td[8]').text
+
+        mp['project name'][number] = browser.find_element(By.XPATH,
+                                                          '//*[@id="Project_listView_row_' + str(
+                                                              number) + '"]/td[2]').text
+
+        if mp['project name'][number] == "Test":
+            PASS = PASS + 1
+            continue
+        try:
+            mp['Engineer name'][number] = browser.find_element(By.XPATH,
+                                                               '//*[@id="Project_listView_row_' + str(
+                                                                   number) + '"]/td[4]').text
+            if mp['Engineer name'][number] == "":
+                print("Engineer name is empty")
+
+            mp['Related To'][number] = browser.find_element(By.XPATH,
+                                                            '//*[@id="Project_listView_row_' + str(
+                                                                number) + '"]/td[6]/span[1]/span').text
+            if mp['Related To'][number] == "":
+                print("Related To is empty")
+
+            mp['status'][number] = browser.find_element(By.XPATH,
+                                                        '//*[@id="Project_listView_row_' + str(
+                                                            number) + '"]/td[5]').text
+            if mp['status'][number] == "":
+                print("status is empty")
+
+
+
+
+            from_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                number) + '"]/td[3]/span[1]/span').text
+            to_date = browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                number) + '"]/td[7]/span[1]/span').text
+            date_format = "%Y-%m-%d"
+            # Get the current date
+            current_date = datetime.now().date()
+
+
+            if to_date == '':
+                to_date = current_date + timedelta(days=90)
+                to_date = to_date.strftime("%Y-%m-%d")
+                to_date="NA"
+            if from_date == '':
+                from_date = current_date - timedelta(days=90)
+                from_date = from_date.strftime("%Y-%m-%d")
+                from_date="NA"
+
+            from_date = datetime.strptime(from_date, date_format)
+            # to_date = datetime.strptime(to_date, date_format)
+            mp['Start Date'][number] = str(from_date)
+            mp['End Date'][number] = str(to_date)
+
+            browser.find_element(By.XPATH, '//*[@id="Project_listView_row_' + str(
+                number) + '"]/td[1]/div/span[2]/a').click()
+
+        except Exception as e:
+            print("project : ", mp['project name'][number], RED + "FAIL" + RESET + str(e))
+            FAIL = FAIL + 1
+            continue
+
+        time.sleep(3)  # Add a delay of 3 seconds
+        try:
+            mp['Details'][number] = browser.find_element(By.XPATH,
+                                                         '//*[@id="detailView"]/div/div/div/div[2]/div/div['
+                                                         '3]/div/div[1]').text
+            if mp['Details'][number] == "":
+                print("Details is empty")
+
+            browser.find_element(By.XPATH,
+                                 '//*[@id="mCSB_' + str(i) + '_container"]/div[1]/div[2]/button').click()
+        except Exception as e:
+            print("project : ", mp['project name'][number], RED + "FAIL" + RESET)
+            print(f"Fail Reason : {e}")
+            FAIL = FAIL + 1
+            i += 1
+            continue
+
+        i = i + 1
+        print("project : ", mp['project name'][number],
+              GREEN + "PASS" + RESET + " Progress: " + str((number / size) * 100))
+        PASS = PASS + 1
+
+        if number > 3:
+            browser.execute_script("arguments[0].scrollIntoView(true);",
+                                   browser.find_element(By.XPATH, '//*['
+                                                                  '@id="Project_listView_row_' + str(
+                                       number - 3) + '"]/td[1]'))
+        # try: if number==size-1: browser.execute_script("window.scrollTo(0, 0);") next_btn= browser.find_element(
+        # By.XPATH,'//*[@id="NextPageButton"]')#.click() if next_btn.is_enabled(): next_btn.click() print("next
+        # page") else: print("end of content") size = int( browser.find_element(By.XPATH,
+        # '//*[@id="listview-actions"]/div/div[3]/div/span/span[1]').text.split( ' to ')[ 1]) + 1 except: continue
+
+        # number+=1
+
+    print(GREEN + "PASS: " + RESET, PASS, "/", size - 1)
+    print(RED + "FAIL: " + RESET, FAIL, "/", size - 1)
+
+    Gen_Document(mp,'Projects-'+str(projects_year)+'.docx')
+    # if PASS == size - 1:
+    #     print("Sending Email....")
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+
+    # Close the browser window
+    browser.quit()
+    savecsv(mp)
+
+    return mp;
+
+Data_Categorization(2023)
+# ar={}
+# for i in range(2019, 2024):
+#     PASS=0
+#     FIAL=0
+#     ar[i]=Data_Categorization(i)
+#     # Specify the current path and the target folder
+#     current_path = os.getcwd()
+#     target_folder = os.getcwd()+"/Projects_"+str(i)
+#
+#     # Ensure the target folder exists; create it if necessary
+#     if not os.path.exists(target_folder):
+#         os.makedirs(target_folder)
+#
+#     # Specify the file name you want to move
+#     specific_file_to_move = 'Projects-'+str(i)+'.docx'
+#
+#     # Check if the file exists in the current path before moving
+#     source_path = os.path.join(current_path, specific_file_to_move)
+#     if os.path.exists(source_path):
+#         destination_path = os.path.join(target_folder, specific_file_to_move)
+#         shutil.move(source_path, destination_path)
+#         print(f"Moved {specific_file_to_move} to {target_folder}")
+#     else:
+#         print(f"File {specific_file_to_move} not found in {current_path}")
+#
+#     #Data_VisualizationDiagrams(ar[i])
+
+
+print(f"done {datetime.now()}");
 #new Idea about when the prj st , end , act end . who finished project faster .
 
 
