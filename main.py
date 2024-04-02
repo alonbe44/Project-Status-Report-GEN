@@ -695,7 +695,7 @@ def Collect_Data():
 
     current_week = str(datetime.now().isocalendar()[1])
     filename = 'Project Status Week ' + current_week + ' 2023.docx'
-    Gen_Document(mp,filename)
+   ## Gen_Document(mp,filename)
 
     if PASS == size - 1:
         print("Sending Email....")
@@ -712,14 +712,14 @@ def Collect_Data():
     #Data_Analysis(mp)
     browser.quit()
 
-Collect_Data()
+#Collect_Data()
 # cleaned_data = Data_Cleaning(mp)
 # print(cleaned_data)
 
 
 
 # Getting Test Data
-mp=init()
+#mp=init()
 #Gen_Document(mp)
 #Collect_Data()
 
