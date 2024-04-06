@@ -723,7 +723,7 @@ def Collect_Data():
 
 ##mp=init()
 #Gen_Document(mp)
-Collect_Data()
+##Collect_Data()
 
 # Data_Cleaning(mp)
 #
